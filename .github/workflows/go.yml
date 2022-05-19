@@ -29,7 +29,7 @@ jobs:
       
     - name: docker build golang
       run: |
-        docker build -t ezalejski/go-grpc-healthcheck:$GITHUB_SHA
+        docker build . -t ezalejski/go-grpc-healthcheck:$GITHUB_SHA
         
     - name: docker push
       run: |
