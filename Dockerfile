@@ -1,3 +1,3 @@
 FROM alpine:3.9
-COPY ./app /
+COPY ./app /app
 CMD [ "/app" ]
