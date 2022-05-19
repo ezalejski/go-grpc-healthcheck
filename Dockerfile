@@ -1,3 +1,3 @@
-FROM alpine:3.9
+FROM golang:alpine
 COPY ./app /app
 CMD [ "/app" ]
