@@ -34,3 +34,4 @@ jobs:
     - name: docker push
       run: |
         docker push ezalejski/go-grpc-healthcheck:$GITHUB_SHA
+        
