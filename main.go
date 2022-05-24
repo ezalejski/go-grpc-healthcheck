@@ -2,7 +2,8 @@ package main
 
 import (
 	"log"
-	"net"
+
+	"net/http"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
@@ -10,13 +11,13 @@ import (
 )
 
 func main() {
-	listener, err := net.Listen("tcp", ":50051")
-	if err != nil {
-		log.Fatal("failed-to-listen-tcp-port")
-	}
+	const httpPort string = ":443"
 	grpcServer := grpc.NewServer()
 	grpc_health_v1.RegisterHealthServer(grpcServer, health.NewServer())
-	if err := grpcServer.Serve(listener); err != nil {
-		log.Fatal("failed-to-serve-grpc-requests")
-	}
+	// Create a server on httpPort
+	httpServer := &http.Server{Addr: httpPort, Handler: grpcServer}
+	// Start the server with TLS, since we are running HTTP/2 it must be
+	// run with TLS.
+	log.Printf("Serving on https://0.0.0.0%s", httpPort)
+	log.Fatal(httpServer.ListenAndServeTLS("/tls/tls.crt", "/tls/tls.key"))
 }
