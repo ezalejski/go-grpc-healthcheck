@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"net"
 
 	"net/http"
 
@@ -11,9 +13,17 @@ import (
 )
 
 func main() {
-	const httpPort string = ":443"
+	const grpcPort string = ":50051"
+	const httpPort string = ":8080"
+	listener, err := net.Listen("tcp", grpcPort)
+	if err != nil {
+		log.Fatal("failed-to-listen-tcp-port: " + err.Error())
+	}
 	grpcServer := grpc.NewServer()
 	grpc_health_v1.RegisterHealthServer(grpcServer, health.NewServer())
+	go grpcServer.Serve(listener)
+	fmt.Println(listener)
+
 	// Create a server on httpPort
 	httpServer := &http.Server{Addr: httpPort, Handler: grpcServer}
 	// Start the server with TLS, since we are running HTTP/2 it must be
