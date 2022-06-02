@@ -19,12 +19,14 @@ func main() {
 	if err != nil {
 		log.Fatal("failed-to-listen-tcp-port: " + err.Error())
 	}
+	// Create a GRPC server
 	grpcServer := grpc.NewServer()
+	// Register healthcheck
 	grpc_health_v1.RegisterHealthServer(grpcServer, health.NewServer())
+	// Start a GRPC server on grpcPort
 	go grpcServer.Serve(listener)
-	fmt.Println(listener)
 
-	// Create a server on httpPort
+	// Create a http server on httpPort
 	httpServer := &http.Server{Addr: httpPort, Handler: grpcServer}
 	// Start the server with TLS, since we are running HTTP/2 it must be
 	// run with TLS.
